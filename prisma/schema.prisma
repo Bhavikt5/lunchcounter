@@ -1,0 +1,155 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  employeeId   String         @unique
+  name         String
+  email        String         @unique
+  phone        String?
+  department   String
+  role         String         @default("EMPLOYEE") // "ADMIN" | "EMPLOYEE"
+  passwordHash String
+  status       String         @default("ACTIVE") // "ACTIVE" | "INACTIVE"
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  bookings     LunchBooking[]
+  bills        Bill[]
+  auditLogs    AuditLog[]
+}
+
+model Vendor {
+  id            String         @id @default(uuid())
+  name          String
+  contactPerson String
+  phone         String
+  email         String
+  address       String
+  status        String         @default("ACTIVE") // "ACTIVE" | "INACTIVE"
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  bookings      LunchBooking[]
+  orders        VendorOrder[]
+}
+
+model FoodOption {
+  id        String         @id @default(uuid())
+  name      String
+  type      String         // "VEG" | "NON_VEG"
+  price     Float
+  status    String         @default("ACTIVE") // "ACTIVE" | "INACTIVE"
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  bookings  LunchBooking[]
+}
+
+model LunchBooking {
+  id             String      @id @default(uuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendorId       String
+  vendor         Vendor      @relation(fields: [vendorId], references: [id])
+  foodOptionId   String
+  foodOption     FoodOption  @relation(fields: [foodOptionId], references: [id])
+  bookingDate    String      // YYYY-MM-DD
+  priceAtBooking Float
+  bookingTime    String      // e.g. "10:15 AM"
+  status         String      @default("CONFIRMED") // "CONFIRMED" | "CANCELLED"
+  cancelledAt    DateTime?
+  createdByAdmin Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  billItems      BillItem[]
+
+  @@unique([userId, bookingDate])
+}
+
+model VendorOrder {
+  id           String    @id @default(uuid())
+  vendorId     String
+  vendor       Vendor    @relation(fields: [vendorId], references: [id])
+  orderDate    String    // YYYY-MM-DD
+  vegCount     Int
+  nonVegCount  Int
+  totalCount   Int
+  totalAmount  Float
+  status       String    @default("DRAFT") // "DRAFT" | "SENT"
+  sentAt       DateTime?
+  snapshotJson String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([vendorId, orderDate])
+}
+
+model Bill {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart    String     // YYYY-MM-DD
+  weekEnd      String     // YYYY-MM-DD
+  totalLunches Int
+  totalAmount  Float
+  status       String     @default("PENDING") // "PENDING" | "PAID"
+  generatedAt  DateTime   @default(now())
+  paidAt       DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  items        BillItem[]
+
+  @@unique([userId, weekStart])
+}
+
+model BillItem {
+  id          String        @id @default(uuid())
+  billId      String
+  bill        Bill          @relation(fields: [billId], references: [id], onDelete: Cascade)
+  bookingId   String?
+  booking     LunchBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  bookingDate String        // YYYY-MM-DD
+  foodType    String        // "VEG" | "NON_VEG"
+  amount      Float
+}
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
+
+model Holiday {
+  id          String   @id @default(uuid())
+  name        String
+  date        String   @unique // YYYY-MM-DD
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName  String
+  action    String
+  entity    String
+  entityId  String?
+  oldValue  String?
+  newValue  String?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("INFO") // "INFO" | "SUCCESS" | "WARNING"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
