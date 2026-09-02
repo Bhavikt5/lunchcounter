@@ -67,7 +67,7 @@ export function Sidebar({ userRole, isMobileOpen, onCloseMobile }: SidebarProps)
         {/* Mobile Header Close */}
         <div className="flex items-center justify-between md:hidden mb-6 pb-4 border-b border-slate-800">
           <span className="font-bold text-white text-base flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" /> Navigation
+            <Sparkles className="w-4 h-4 text-blue-400" /> Navigation
           </span>
           <button onClick={onCloseMobile} className="text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
@@ -91,7 +91,7 @@ export function Sidebar({ userRole, isMobileOpen, onCloseMobile }: SidebarProps)
                 onClick={onCloseMobile}
                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
                   isActive
-                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
                     : "hover:bg-slate-800 hover:text-white text-slate-400"
                 }`}
               >
@@ -102,7 +102,7 @@ export function Sidebar({ userRole, isMobileOpen, onCloseMobile }: SidebarProps)
                 {link.badge && (
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      isActive ? "bg-emerald-700 text-white" : "bg-slate-800 text-emerald-400 border border-slate-700"
+                      isActive ? "bg-blue-700 text-white" : "bg-slate-800 text-blue-400 border border-slate-700"
                     }`}
                   >
                     {link.badge}
@@ -118,7 +118,7 @@ export function Sidebar({ userRole, isMobileOpen, onCloseMobile }: SidebarProps)
       <div className="mt-8 p-3.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs">
         <div className="flex items-center justify-between font-semibold text-slate-200 mb-1">
           <span>Role</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${userRole === "ADMIN" ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"}`}>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${userRole === "ADMIN" ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-blue-500/20 text-blue-300 border border-blue-500/30"}`}>
             {userRole}
           </span>
         </div>

@@ -37,12 +37,12 @@ export default function AdminReportsPage() {
     if (reportType === "daily") {
       csvContent += "Booking Date,Employee ID,Employee Name,Department,Food Option,Price,Status\n";
       reportData.records?.forEach((r: any) => {
-        csvContent += `${r.bookingDate},${r.user.employeeId},"${r.user.name}",${r.user.department},${r.foodOption.type},${r.priceAtBooking},${r.status}\n`;
+        csvContent += `${r.bookingDate},${r.user?.employeeId || ""},"${r.user?.name || "Unknown"}",${r.user?.department || ""},${r.foodOption?.type || ""},${r.priceAtBooking},${r.status}\n`;
       });
     } else if (reportType === "weekly") {
       csvContent += "Employee ID,Employee Name,Department,Total Lunches,Veg Count,Non-Veg Count,Total Amount\n";
       reportData.records?.forEach((r: any) => {
-        csvContent += `${r.employee.employeeId},"${r.employee.name}",${r.employee.department},${r.totalLunches},${r.vegCount},${r.nonVegCount},${r.totalAmount}\n`;
+        csvContent += `${r.employee?.employeeId || ""},"${r.employee?.name || "Unknown"}",${r.employee?.department || ""},${r.totalLunches},${r.vegCount},${r.nonVegCount},${r.totalAmount}\n`;
       });
     } else {
       csvContent += "Metric,Value\n";
@@ -68,14 +68,14 @@ export default function AdminReportsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <FileText className="w-6 h-6 text-emerald-600" /> Lunch Reports & Analytics
+            <FileText className="w-6 h-6 text-blue-600" /> Lunch Reports & Analytics
           </h1>
           <p className="text-xs text-slate-500 mt-1">Exportable daily, weekly, and monthly aggregate reports.</p>
         </div>
 
         <button
           onClick={exportCSV}
-          className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5"
+          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5"
         >
           <Download className="w-4 h-4" /> Export CSV
         </button>
@@ -162,11 +162,11 @@ export default function AdminReportsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs">
-                      {reportData.records?.map((r: any) => (
-                        <tr key={r.id}>
-                          <td className="py-3 px-4 font-semibold text-slate-900">{r.user.name} ({r.user.employeeId})</td>
-                          <td className="py-3 px-4 text-slate-600">{r.user.department}</td>
-                          <td className="py-3 px-4 font-bold">{r.foodOption.type}</td>
+                      {reportData.records?.map((r: any, idx: number) => (
+                        <tr key={r.id || `daily-${idx}`}>
+                          <td className="py-3 px-4 font-semibold text-slate-900">{r.user?.name || "Unknown"} ({r.user?.employeeId || "N/A"})</td>
+                          <td className="py-3 px-4 text-slate-600">{r.user?.department || "N/A"}</td>
+                          <td className="py-3 px-4 font-bold">{r.foodOption?.type || "N/A"}</td>
                           <td className="py-3 px-4 font-bold text-slate-900">₹{r.priceAtBooking}</td>
                           <td className="py-3 px-4 text-right font-bold">{r.status}</td>
                         </tr>
@@ -191,10 +191,10 @@ export default function AdminReportsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-sm">
-                    {reportData.records?.map((rec: any) => (
-                      <tr key={rec.employee.id}>
-                        <td className="py-3 px-4 font-semibold text-slate-900">{rec.employee.name} ({rec.employee.employeeId})</td>
-                        <td className="py-3 px-4 text-slate-600 text-xs">{rec.employee.department}</td>
+                    {reportData.records?.map((rec: any, idx: number) => (
+                      <tr key={rec.employee?.id ? `weekly-${rec.employee.id}` : `weekly-${idx}`}>
+                        <td className="py-3 px-4 font-semibold text-slate-900">{rec.employee?.name || "Unknown"} ({rec.employee?.employeeId || "N/A"})</td>
+                        <td className="py-3 px-4 text-slate-600 text-xs">{rec.employee?.department || "N/A"}</td>
                         <td className="py-3 px-4 font-bold text-slate-900">{rec.totalLunches} Days</td>
                         <td className="py-3 px-4 text-emerald-700 font-bold">{rec.vegCount}</td>
                         <td className="py-3 px-4 text-orange-700 font-bold">{rec.nonVegCount}</td>
@@ -210,7 +210,7 @@ export default function AdminReportsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="p-6 rounded-3xl bg-slate-900 text-white shadow-xl">
                   <div className="text-xs font-bold text-slate-400 uppercase">Monthly Revenue</div>
-                  <div className="text-3xl font-extrabold text-emerald-400 mt-2">₹{reportData.metrics?.totalRevenue}</div>
+                  <div className="text-3xl font-extrabold text-blue-400 mt-2">₹{reportData.metrics?.totalRevenue}</div>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xl">

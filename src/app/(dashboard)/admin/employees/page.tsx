@@ -138,14 +138,14 @@ export default function AdminEmployeesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <Users className="w-6 h-6 text-emerald-600" /> Employee Directory Management
+            <Users className="w-6 h-6 text-blue-600" /> Employee Directory Management
           </h1>
           <p className="text-xs text-slate-500 mt-1">Add, edit, disable employees and view spending totals.</p>
         </div>
 
         <button
           onClick={openAddModal}
-          className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5"
+          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5"
         >
           <Plus className="w-4 h-4" /> Add New Employee
         </button>
@@ -159,7 +159,7 @@ export default function AdminEmployeesPage() {
             placeholder="Search name, ID, department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500"
+            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -199,11 +199,11 @@ export default function AdminEmployeesPage() {
                       {emp.unpaidBillsAmount > 0 ? (
                         <span className="text-amber-600 font-bold text-xs">₹{emp.unpaidBillsAmount} ({emp.unpaidBillsCount})</span>
                       ) : (
-                        <span className="text-emerald-600 font-bold text-xs">Paid</span>
+                        <span className="text-blue-600 font-bold text-xs">Paid</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${emp.status === "ACTIVE" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${emp.status === "ACTIVE" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}`}>
                         {emp.status}
                       </span>
                     </td>
@@ -278,7 +278,7 @@ export default function AdminEmployeesPage() {
 
             <div className="pt-2 flex justify-end gap-2">
               <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
-              <button type="submit" disabled={submitting} className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700">
+              <button type="submit" disabled={submitting} className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700">
                 {submitting ? "Saving..." : "Save Employee"}
               </button>
             </div>

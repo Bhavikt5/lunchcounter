@@ -11,9 +11,19 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const date = searchParams.get("date") || new Date().toISOString().split("T")[0];
+  const isHistory = searchParams.get("history") === "true";
 
   try {
+    if (isHistory) {
+      const userBookings = await db.lunchBooking.findMany({
+        where: { userId: user.id },
+        include: { foodOption: true, vendor: true },
+        orderBy: { bookingDate: "desc" },
+      });
+      return NextResponse.json({ bookings: userBookings });
+    }
+
+    const date = searchParams.get("date") || new Date().toISOString().split("T")[0];
     // Get user's booking for specific date
     const booking = await db.lunchBooking.findUnique({
       where: {
@@ -36,10 +46,21 @@ export async function GET(req: Request) {
       where: { status: "ACTIVE" },
     });
 
+    // Get count of confirmed bookings for the current month
+    const currentMonthPrefix = date.substring(0, 7); // e.g. "2026-09"
+    const monthBookingCount = await db.lunchBooking.count({
+      where: {
+        userId: user.id,
+        bookingDate: { startsWith: currentMonthPrefix },
+        status: "CONFIRMED",
+      },
+    });
+
     return NextResponse.json({
       booking,
       cutoffStatus,
       foodOptions,
+      monthBookingCount,
       date,
     });
   } catch (error) {

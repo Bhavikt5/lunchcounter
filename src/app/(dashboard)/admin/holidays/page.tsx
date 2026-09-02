@@ -80,7 +80,7 @@ export default function AdminHolidaysPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          <CalendarDays className="w-6 h-6 text-emerald-600" /> Holiday Manager
+          <CalendarDays className="w-6 h-6 text-blue-600" /> Holiday Manager
         </h1>
         <p className="text-xs text-slate-500 mt-1">Configure company holidays to automatically block lunch bookings.</p>
       </div>
@@ -127,7 +127,7 @@ export default function AdminHolidaysPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 rounded-xl gradient-emerald text-white text-xs font-bold shadow-md hover:opacity-95"
+            className="w-full py-2.5 rounded-xl gradient-blue text-white text-xs font-bold shadow-md hover:opacity-95"
           >
             {submitting ? "Adding..." : "Add Holiday"}
           </button>
@@ -146,7 +146,7 @@ export default function AdminHolidaysPage() {
               holidays.map((h) => (
                 <div key={h.id} className="py-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-emerald-600" />
+                    <Calendar className="w-5 h-5 text-blue-600" />
                     <div>
                       <div className="font-bold text-slate-900 text-sm">{h.name}</div>
                       <div className="text-xs text-slate-500">{h.date} {h.description && `• ${h.description}`}</div>

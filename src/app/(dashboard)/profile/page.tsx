@@ -18,19 +18,19 @@ export default function ProfilePage() {
     <div className="space-y-6 max-w-2xl mx-auto">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          <UserIcon className="w-6 h-6 text-emerald-600" /> Employee Profile
+          <UserIcon className="w-6 h-6 text-blue-600" /> Employee Profile
         </h1>
         <p className="text-xs text-slate-500 mt-1">View your official profile details.</p>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 space-y-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-none sm:shadow-xl border border-slate-200 space-y-6">
         <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
           <div className="w-16 h-16 rounded-2xl bg-slate-900 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg">
             {user.name.charAt(0)}
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-slate-900">{user.name}</h2>
-            <p className="text-xs font-mono text-emerald-600 font-semibold mt-0.5">Employee ID: {user.employeeId}</p>
+            <p className="text-xs font-mono text-blue-600 font-semibold mt-0.5">Employee ID: {user.employeeId}</p>
             <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
               Role: {user.role}
             </span>
@@ -58,7 +58,7 @@ export default function ProfilePage() {
             <Shield className="w-5 h-5 text-slate-400" />
             <div>
               <div className="text-[11px] font-bold text-slate-400 uppercase">Account Status</div>
-              <div className="text-sm font-semibold text-emerald-600">Active Employee</div>
+              <div className="text-sm font-semibold text-blue-600">Active Employee</div>
             </div>
           </div>
         </div>

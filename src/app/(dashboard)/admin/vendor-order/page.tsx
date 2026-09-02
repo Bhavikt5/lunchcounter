@@ -69,7 +69,10 @@ export default function AdminVendorOrderPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showToast("Order marked as SENT to vendor!", "success");
+        showToast(
+          data.message || `Order marked as SENT! Email notification sent to ${data.recipient || "vendor"}.`,
+          "success"
+        );
         fetchVendorOrder();
       } else {
         showToast(data.error || "Failed to mark order sent", "error");
@@ -128,25 +131,25 @@ Total Estimated Amount: ₹${currentCounts.totalAmount}`;
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6 text-emerald-600" /> Today's Vendor Order
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6 text-blue-600 shrink-0" /> Today's Vendor Order
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Calculate, freeze, and dispatch daily lunch counts to vendor at 11:00 AM.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-900"
+            className="px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 w-full sm:w-auto"
           />
           <button
             onClick={handleGenerateSnapshot}
             disabled={submitting}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors"
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors w-full sm:w-auto flex justify-center items-center gap-1.5"
           >
             Freeze / Generate Order
           </button>
@@ -165,28 +168,28 @@ Total Estimated Amount: ₹${currentCounts.totalAmount}`;
       )}
 
       {/* Main Vendor Order Summary Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 space-y-6">
+      <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-none sm:shadow-xl border border-slate-200 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div>
-            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
               Vendor Order Summary
             </span>
-            <h2 className="text-xl font-extrabold text-slate-900 mt-2">
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-2">
               {vendor?.name || "Green Leaf Caterers"}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
               Contact: {vendor?.contactPerson} • Phone: {vendor?.phone} • Email: {vendor?.email}
             </p>
           </div>
 
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             {vendorOrder?.status === "SENT" ? (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Order Sent to Vendor
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold border border-blue-300">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" /> Order Sent to Vendor
               </div>
             ) : (
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold border border-amber-300">
-                <Clock className="w-4 h-4 text-amber-600" /> Draft / Pending Dispatch
+                <Clock className="w-4 h-4 text-amber-600 shrink-0" /> Draft / Pending Dispatch
               </div>
             )}
             {vendorOrder?.sentAt && (
@@ -229,25 +232,25 @@ Total Estimated Amount: ₹${currentCounts.totalAmount}`;
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
+          <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
             <button
               onClick={copySummaryText}
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
-              <Copy className="w-4 h-4 text-emerald-600" /> Copy Order Summary
+              <Copy className="w-4 h-4 text-blue-600" /> Copy Order Summary
             </button>
 
             <button
               onClick={downloadCSV}
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
               <FileSpreadsheet className="w-4 h-4 text-blue-600" /> Download CSV
             </button>
 
             <button
               onClick={triggerPrint}
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
               <Printer className="w-4 h-4 text-purple-600" /> Download PDF / Print
             </button>
@@ -256,11 +259,75 @@ Total Estimated Amount: ₹${currentCounts.totalAmount}`;
           <button
             onClick={handleMarkSent}
             disabled={submitting}
-            className="px-5 py-2.5 rounded-xl gradient-emerald text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-opacity flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl gradient-blue text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <CheckCircle2 className="w-4 h-4" /> Mark Order as Sent
           </button>
         </div>
+      </div>
+
+      {/* Included Employee Bookings Table */}
+      <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-none sm:shadow-xl border border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+              Employee Bookings Included in Order ({currentCounts.bookings.length})
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              List of all employees whose lunches are included in today's vendor dispatch.
+            </p>
+          </div>
+        </div>
+
+        {currentCounts.bookings.length === 0 ? (
+          <div className="py-8 text-center text-slate-400 text-sm">
+            No confirmed employee bookings found for this date.
+          </div>
+        ) : (
+          <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
+            <table className="w-full text-left border-collapse min-w-[550px]">
+              <thead>
+                <tr className="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-50">
+                  <th className="py-3 px-4">Employee</th>
+                  <th className="py-3 px-4">Department</th>
+                  <th className="py-3 px-4">Food Option</th>
+                  <th className="py-3 px-4">Booking Time</th>
+                  <th className="py-3 px-4 text-right">Price</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-sm">
+                {currentCounts.bookings.map((b: any) => (
+                  <tr key={b.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3.5 px-4 font-semibold text-slate-900">
+                      <div>{b.user?.name || "Unknown"}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">
+                        ID: {b.user?.employeeId || "N/A"}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 text-xs text-slate-600 font-medium">
+                      {b.user?.department || "General"}
+                    </td>
+                    <td className="py-3.5 px-4 font-bold">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                          b.foodOption?.type === "VEG"
+                            ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                            : "bg-orange-100 text-orange-800 border border-orange-300"
+                        }`}
+                      >
+                        {b.foodOption?.name || b.foodOption?.type}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-xs text-slate-500">{b.bookingTime}</td>
+                    <td className="py-3.5 px-4 text-right font-extrabold text-slate-900">
+                      ₹{b.priceAtBooking}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

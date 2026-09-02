@@ -20,12 +20,13 @@ export async function GET(req: Request) {
     // Employees only see their own bills
     if (user.role !== "ADMIN") {
       whereClause.userId = user.id;
-    } else if (search) {
+    } else if (search.trim()) {
+      const query = search.trim();
       whereClause.user = {
         OR: [
-          { name: { contains: search } },
-          { employeeId: { contains: search } },
-          { email: { contains: search } },
+          { name: { contains: query, mode: "insensitive" } },
+          { employeeId: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
         ],
       };
     }
@@ -49,15 +50,26 @@ export async function GET(req: Request) {
 
     let totalPendingAmount = 0;
     let totalPaidAmount = 0;
+    let totalVerificationPendingAmount = 0;
     bills.forEach((b: any) => {
       if (b.status === "PENDING") totalPendingAmount += b.totalAmount;
+      if (b.status === "VERIFICATION_PENDING") totalVerificationPendingAmount += b.totalAmount;
       if (b.status === "PAID") totalPaidAmount += b.totalAmount;
     });
 
+    const settings = await db.setting.findMany();
+    const settingsMap: Record<string, string> = {};
+    settings.forEach((s) => (settingsMap[s.key] = s.value));
+
     return NextResponse.json({
       bills,
+      paymentSettings: {
+        upiId: settingsMap["payment_upi_id"] || "lunchcounter@upi",
+        qrCode: settingsMap["payment_qr_code"] || "",
+      },
       summary: {
         totalPendingAmount,
+        totalVerificationPendingAmount,
         totalPaidAmount,
         count: bills.length,
       },
@@ -68,7 +80,7 @@ export async function GET(req: Request) {
   }
 }
 
-// Mark bill as paid
+// Mark bill as paid or verify/reject payment proof
 export async function PUT(req: Request) {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") {
@@ -76,27 +88,33 @@ export async function PUT(req: Request) {
   }
 
   try {
-    const { billId, status } = await req.json();
+    const { billId, status, action, rejectionReason } = await req.json();
 
     const bill = await db.bill.findUnique({ where: { id: billId }, include: { user: true } });
     if (!bill) {
       return NextResponse.json({ error: "Bill not found" }, { status: 404 });
     }
 
-    const newStatus = status || "PAID";
+    let newStatus = status || "PAID";
+    if (action === "APPROVE") newStatus = "PAID";
+    if (action === "REJECT") newStatus = "REJECTED";
+
+    const updateData: any = {
+      status: newStatus,
+      paidAt: newStatus === "PAID" ? new Date() : null,
+      rejectionReason: newStatus === "REJECTED" ? rejectionReason || "Payment proof verification failed." : null,
+    };
+
     const updated = await db.bill.update({
       where: { id: billId },
-      data: {
-        status: newStatus,
-        paidAt: newStatus === "PAID" ? new Date() : null,
-      },
+      data: updateData,
       include: { user: true, items: true },
     });
 
     await createAuditLog({
       userId: user.id,
       userName: user.name,
-      action: "UPDATE_BILL_STATUS",
+      action: "VERIFY_BILL_PAYMENT",
       entity: "BILL",
       entityId: billId,
       oldValue: bill.status,
@@ -107,9 +125,18 @@ export async function PUT(req: Request) {
       await db.notification.create({
         data: {
           userId: bill.userId,
-          title: "Bill Marked as Paid",
-          message: `Your lunch bill for week ${bill.weekStart} to ${bill.weekEnd} (₹${bill.totalAmount}) has been marked as paid.`,
+          title: "Payment Approved & Bill Paid",
+          message: `Your payment of ₹${bill.totalAmount} for week ${bill.weekStart} to ${bill.weekEnd} has been verified and marked as PAID.`,
           type: "SUCCESS",
+        },
+      });
+    } else if (newStatus === "REJECTED") {
+      await db.notification.create({
+        data: {
+          userId: bill.userId,
+          title: "Payment Proof Rejected",
+          message: `Your payment proof for week ${bill.weekStart} to ${bill.weekEnd} was rejected. Reason: ${rejectionReason || "Verification failed"}. Please re-submit proof.`,
+          type: "WARNING",
         },
       });
     }

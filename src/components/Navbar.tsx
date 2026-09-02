@@ -107,13 +107,13 @@ export function Navbar({ user, onMobileMenuToggle }: NavbarProps) {
           )}
 
           <Link href={user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl gradient-emerald flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
               <UtensilsCrossed className="w-5 h-5" />
             </div>
             <div>
               <span className="font-bold text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
                 Lunch Counter
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold border border-blue-200">
                   v1.0
                 </span>
               </span>
@@ -125,14 +125,14 @@ export function Navbar({ user, onMobileMenuToggle }: NavbarProps) {
         {/* Center: Live Cutoff Status Badge */}
         {cutoffStatus && (
           <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border bg-white/80 shadow-2xs">
-            <Clock className={`w-3.5 h-3.5 ${cutoffStatus.isOpen ? "text-emerald-600" : "text-red-500"}`} />
+            <Clock className={`w-3.5 h-3.5 ${cutoffStatus.isOpen ? "text-blue-600" : "text-red-500"}`} />
             <span className="text-slate-600">
               Cutoff: <strong className="text-slate-900">{cutoffStatus.cutoffTime} AM</strong>
             </span>
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                 cutoffStatus.isOpen
-                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                  ? "bg-blue-100 text-blue-800 border border-blue-300"
                   : "bg-red-100 text-red-800 border border-red-300"
               }`}
             >
@@ -164,12 +164,12 @@ export function Navbar({ user, onMobileMenuToggle }: NavbarProps) {
                 <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                     <h3 className="font-semibold text-slate-900 text-sm flex items-center gap-2">
-                      <Bell className="w-4 h-4 text-emerald-600" /> Notifications
+                      <Bell className="w-4 h-4 text-blue-600" /> Notifications
                     </h3>
                     {unreadCount > 0 && (
                       <button
                         onClick={markAllRead}
-                        className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+                        className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
                       >
                         Mark all read
                       </button>
@@ -182,7 +182,7 @@ export function Navbar({ user, onMobileMenuToggle }: NavbarProps) {
                       notifications.map((n) => (
                         <div
                           key={n.id}
-                          className={`p-4 text-xs transition-colors ${!n.read ? "bg-emerald-50/50 font-medium" : "hover:bg-slate-50"}`}
+                          className={`p-4 text-xs transition-colors ${!n.read ? "bg-blue-50/50 font-medium" : "hover:bg-slate-50"}`}
                         >
                           <div className="flex items-start justify-between gap-2">
                             <span className="font-semibold text-slate-900">{n.title}</span>
@@ -229,7 +229,7 @@ export function Navbar({ user, onMobileMenuToggle }: NavbarProps) {
                   <div className="px-4 py-2 border-b border-slate-100">
                     <p className="text-xs font-bold text-slate-900">{user.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                    <p className="text-[10px] font-mono text-emerald-600 mt-0.5">ID: {user.employeeId}</p>
+                    <p className="text-[10px] font-mono text-blue-600 mt-0.5">ID: {user.employeeId}</p>
                   </div>
                   <div className="py-1">
                     <Link

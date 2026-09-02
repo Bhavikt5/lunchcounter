@@ -30,7 +30,7 @@ export default function AdminAuditLogsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          <History className="w-6 h-6 text-emerald-600" /> Admin Audit Trail
+          <History className="w-6 h-6 text-blue-600" /> Admin Audit Trail
         </h1>
         <p className="text-xs text-slate-500 mt-1">Audit log tracking administrative actions, price updates, and bill generations.</p>
       </div>
@@ -64,7 +64,7 @@ export default function AdminAuditLogsPage() {
                       {new Date(log.createdAt).toLocaleString()}
                     </td>
                     <td className="py-3 px-4 font-semibold text-slate-900">{log.userName}</td>
-                    <td className="py-3 px-4 font-bold text-emerald-700">{log.action}</td>
+                    <td className="py-3 px-4 font-bold text-blue-700">{log.action}</td>
                     <td className="py-3 px-4 font-medium text-slate-700">{log.entity}</td>
                     <td className="py-3 px-4 text-slate-500 font-mono">{log.oldValue || "—"}</td>
                     <td className="py-3 px-4 text-slate-900 font-medium">{log.newValue || "—"}</td>

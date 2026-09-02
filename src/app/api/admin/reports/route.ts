@@ -59,6 +59,7 @@ export async function GET(req: Request) {
       const employeeStatsMap: Record<string, { employee: any; totalLunches: number; vegCount: number; nonVegCount: number; totalAmount: number }> = {};
 
       bookings.forEach((b: any) => {
+        if (!b.user) return;
         if (!employeeStatsMap[b.userId]) {
           employeeStatsMap[b.userId] = {
             employee: b.user,
@@ -71,8 +72,8 @@ export async function GET(req: Request) {
         const stat = employeeStatsMap[b.userId];
         stat.totalLunches++;
         stat.totalAmount += b.priceAtBooking;
-        if (b.foodOption.type === "VEG") stat.vegCount++;
-        if (b.foodOption.type === "NON_VEG") stat.nonVegCount++;
+        if (b.foodOption?.type === "VEG") stat.vegCount++;
+        if (b.foodOption?.type === "NON_VEG") stat.nonVegCount++;
       });
 
       return NextResponse.json({

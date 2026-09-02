@@ -92,7 +92,7 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <LayoutDashboard className="w-7 h-7 text-emerald-600" /> Admin Dashboard
+            <LayoutDashboard className="w-7 h-7 text-blue-600" /> Admin Dashboard
           </h1>
           <p className="text-xs text-slate-500 mt-1">Live monitoring, cutoff controls, vendor orders, and billing overview.</p>
         </div>
@@ -102,11 +102,11 @@ export default function AdminDashboardPage() {
             href="/admin/vendor-order"
             className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl shadow-md hover:bg-slate-800 transition-colors flex items-center gap-1.5"
           >
-            <ShoppingBag className="w-4 h-4 text-emerald-400" /> Vendor Order (11 AM)
+            <ShoppingBag className="w-4 h-4 text-blue-400" /> Vendor Order (11 AM)
           </Link>
           <Link
             href="/admin/bills"
-            className="px-4 py-2 gradient-emerald text-white text-xs font-bold rounded-xl shadow-md hover:opacity-95 transition-opacity flex items-center gap-1.5"
+            className="px-4 py-2 gradient-blue text-white text-xs font-bold rounded-xl shadow-md hover:opacity-95 transition-opacity flex items-center gap-1.5"
           >
             <Receipt className="w-4 h-4" /> Generate Bills
           </Link>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
           <div className="text-[11px] font-bold text-slate-400 uppercase">Vendor Order</div>
           <div className="text-sm font-bold text-slate-900 mt-2 flex items-center gap-1">
             {orderSent ? (
-              <span className="text-emerald-600 font-bold flex items-center gap-1">
+              <span className="text-blue-600 font-bold flex items-center gap-1">
                 <CheckCircle2 className="w-4 h-4" /> Sent ✓
               </span>
             ) : (
@@ -173,11 +173,11 @@ export default function AdminDashboardPage() {
         <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-xl border border-slate-200 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
-              <Utensils className="w-5 h-5 text-emerald-600" /> Today's Lunch Summary
+              <Utensils className="w-5 h-5 text-blue-600" /> Today's Lunch Summary
             </h2>
             <Link
               href="/admin/bookings"
-              className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
             >
               View Full Table <ArrowRight className="w-4 h-4" />
             </Link>
@@ -235,7 +235,7 @@ export default function AdminDashboardPage() {
           <div className="space-y-3">
             <Link
               href="/admin/vendor-order"
-              className="w-full p-4 rounded-2xl bg-emerald-600 text-white font-bold text-sm shadow-md hover:bg-emerald-700 transition-colors flex items-center justify-between"
+              className="w-full p-4 rounded-2xl bg-blue-600 text-white font-bold text-sm shadow-md hover:bg-blue-700 transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" /> Generate 11 AM Vendor Order
@@ -248,7 +248,7 @@ export default function AdminDashboardPage() {
               className="w-full p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                <Plus className="w-4 h-4 text-emerald-600" /> Manual Employee Booking
+                <Plus className="w-4 h-4 text-blue-600" /> Manual Employee Booking
               </div>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
@@ -258,7 +258,7 @@ export default function AdminDashboardPage() {
               className="w-full p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-emerald-600" /> Weekly Billing Generator
+                <Receipt className="w-4 h-4 text-blue-600" /> Weekly Billing Generator
               </div>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
@@ -268,7 +268,7 @@ export default function AdminDashboardPage() {
               className="w-full p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-emerald-600" /> Food & Price Management
+                <DollarSign className="w-4 h-4 text-blue-600" /> Food & Price Management
               </div>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>

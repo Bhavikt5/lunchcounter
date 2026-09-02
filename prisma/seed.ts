@@ -96,9 +96,13 @@ async function main() {
   // 5. System Settings
   await prisma.setting.createMany({
     data: [
+      { key: "order_start_time", value: "08:00" },
       { key: "cutoff_time", value: "11:00" },
       { key: "manual_cutoff_closed", value: "false" },
       { key: "company_name", value: "Lunch Counter" },
+      { key: "notification_email", value: "admin@lunchcounter.com" },
+      { key: "payment_upi_id", value: "lunchcounter@upi" },
+      { key: "payment_qr_code", value: "" },
       { key: "currency", value: "₹" },
       { key: "working_days", value: "Mon,Tue,Wed,Thu,Fri" },
       { key: "default_vendor_id", value: vendor.id },

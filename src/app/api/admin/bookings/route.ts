@@ -21,20 +21,25 @@ export async function GET(req: Request) {
     };
 
     if (foodType !== "ALL") {
-      whereClause.foodOption = { type: foodType };
+      if (foodType === "VEG" || foodType === "NON_VEG") {
+        whereClause.foodOption = { type: foodType };
+      } else {
+        whereClause.foodOptionId = foodType;
+      }
     }
 
     if (status !== "ALL") {
       whereClause.status = status;
     }
 
-    if (search) {
+    if (search.trim()) {
+      const query = search.trim();
       whereClause.user = {
         OR: [
-          { name: { contains: search } },
-          { employeeId: { contains: search } },
-          { email: { contains: search } },
-          { department: { contains: search } },
+          { name: { contains: query, mode: "insensitive" } },
+          { employeeId: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
+          { department: { contains: query, mode: "insensitive" } },
         ],
       };
     }

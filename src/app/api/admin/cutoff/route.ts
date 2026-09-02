@@ -24,7 +24,15 @@ export async function PUT(req: Request) {
   }
 
   try {
-    const { cutoffTime, manualClosed } = await req.json();
+    const { orderStartTime, cutoffTime, manualClosed } = await req.json();
+
+    if (orderStartTime !== undefined) {
+      await db.setting.upsert({
+        where: { key: "order_start_time" },
+        update: { value: orderStartTime },
+        create: { key: "order_start_time", value: orderStartTime },
+      });
+    }
 
     if (cutoffTime !== undefined) {
       await db.setting.upsert({
@@ -47,7 +55,7 @@ export async function PUT(req: Request) {
       userName: user.name,
       action: "UPDATE_CUTOFF_SETTINGS",
       entity: "SETTING",
-      newValue: `Cutoff: ${cutoffTime ?? "unchanged"}, Manual Closed: ${manualClosed ?? "unchanged"}`,
+      newValue: `Start: ${orderStartTime ?? "unchanged"}, Cutoff: ${cutoffTime ?? "unchanged"}, Manual Closed: ${manualClosed ?? "unchanged"}`,
     });
 
     const updatedCutoffStatus = await getBookingCutoffStatus();

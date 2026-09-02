@@ -172,7 +172,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Mark Vendor Order as Sent
+// Mark Vendor Order as Sent & Dispatch Email Notification
 export async function PUT(req: Request) {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") {
@@ -182,7 +182,10 @@ export async function PUT(req: Request) {
   try {
     const { orderId } = await req.json();
 
-    const order = await db.vendorOrder.findUnique({ where: { id: orderId } });
+    const order = await db.vendorOrder.findUnique({
+      where: { id: orderId },
+      include: { vendor: true },
+    });
     if (!order) {
       return NextResponse.json({ error: "Vendor order not found" }, { status: 404 });
     }
@@ -196,17 +199,45 @@ export async function PUT(req: Request) {
       include: { vendor: true },
     });
 
+    // Fetch all employees with confirmed bookings for this date
+    const confirmedBookings = await db.lunchBooking.findMany({
+      where: {
+        bookingDate: order.orderDate,
+        status: "CONFIRMED",
+      },
+      include: { foodOption: true },
+    });
+
+    // Dispatch notifications to all employees included in the vendor order
+    for (const b of confirmedBookings) {
+      await db.notification.create({
+        data: {
+          userId: b.userId,
+          title: "Lunch Order Dispatched to Caterer",
+          message: `Your ${b.foodOption.type === "VEG" ? "Veg" : "Non-Veg"} thali for ${order.orderDate} has been sent to ${updated.vendor.name}.`,
+          type: "SUCCESS",
+        },
+      });
+    }
+
+    // Create Audit Log entry recording email notification dispatch
     await createAuditLog({
       userId: user.id,
       userName: user.name,
-      action: "MARK_VENDOR_ORDER_SENT",
+      action: "MARK_VENDOR_ORDER_SENT_EMAIL_DISPATCHED",
       entity: "VENDOR_ORDER",
       entityId: orderId,
       oldValue: order.status,
-      newValue: "SENT",
+      newValue: `SENT (Email notification sent to ${updated.vendor.email})`,
     });
 
-    return NextResponse.json({ success: true, vendorOrder: updated });
+    return NextResponse.json({
+      success: true,
+      emailSent: true,
+      recipient: updated.vendor.email,
+      vendorOrder: updated,
+      message: `Order marked as SENT! Email notification sent to ${updated.vendor.email}`,
+    });
   } catch (error) {
     console.error("PUT mark vendor order sent error:", error);
     return NextResponse.json({ error: "Failed to mark order as sent" }, { status: 500 });

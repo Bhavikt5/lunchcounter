@@ -55,7 +55,7 @@ export default function AdminFoodOptionsPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          <Sliders className="w-6 h-6 text-emerald-600" /> Food & Pricing Management
+          <Sliders className="w-6 h-6 text-blue-600" /> Food & Pricing Management
         </h1>
         <p className="text-xs text-slate-500 mt-1">Configure daily lunch food options and unit pricing.</p>
       </div>
@@ -107,7 +107,7 @@ export default function AdminFoodOptionsPage() {
                         prev.map((o) => (o.id === option.id ? { ...o, price: isNaN(val) ? 0 : val } : o))
                       );
                     }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-lg font-extrabold text-slate-900 focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-lg font-extrabold text-slate-900 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -115,7 +115,7 @@ export default function AdminFoodOptionsPage() {
               <button
                 onClick={() => handleUpdatePrice(option)}
                 disabled={savingId === option.id}
-                className="w-full py-2.5 rounded-xl gradient-emerald text-white text-xs font-bold shadow-md hover:opacity-95 flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-xl gradient-blue text-white text-xs font-bold shadow-md hover:opacity-95 flex items-center justify-center gap-1.5"
               >
                 <Save className="w-4 h-4" /> {savingId === option.id ? "Saving..." : "Save Price"}
               </button>

@@ -1,0 +1,181 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { UtensilsCrossed, ArrowRight } from "lucide-react";
+import { useToast } from "@/components/Toast";
+
+export default function SignupPage() {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [department, setDepartment] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name || !email || !department || !password) {
+      showToast("Please fill in all required fields", "warning");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showToast("Passwords do not match", "warning");
+      return;
+    }
+
+    if (password.length < 6) {
+      showToast("Password must be at least 6 characters", "warning");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone, department, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error || "Signup failed", "error");
+      } else {
+        showToast(`Welcome, ${data.user.name}! Your account is ready.`, "success");
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (e) {
+      showToast("Something went wrong. Please try again.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Glow Accents */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-blue text-white shadow-xl shadow-blue-500/20 mb-4">
+          <UtensilsCrossed className="w-8 h-8" />
+        </div>
+        <h2 className="text-3xl font-extrabold text-white tracking-tight">Lunch Counter</h2>
+        <p className="mt-2 text-sm text-slate-400">Create your employee account</p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+        <div className="bg-white/95 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-slate-100">
+          <form className="space-y-4" onSubmit={handleSignup}>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Rahul Sharma"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="rahul@company.com"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98000 00000"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Department
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  placeholder="Engineering"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 bg-slate-50/50"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white gradient-blue hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center gap-2 group"
+            >
+              {loading ? "Creating account..." : "Create Account"}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </form>
+
+          <p className="text-sm text-slate-500 text-center mt-6">
+            Already have an account?{" "}
+            <a href="/login" className="font-semibold text-blue-600 hover:text-blue-700">
+              Sign in
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
