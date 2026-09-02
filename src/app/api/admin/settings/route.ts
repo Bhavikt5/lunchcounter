@@ -27,12 +27,17 @@ export async function PUT(req: Request) {
       });
     }
 
+    const sanitizedBody = { ...body };
+    if (sanitizedBody.smtp_pass) {
+      sanitizedBody.smtp_pass = "********";
+    }
+
     await createAuditLog({
       userId: user.id,
       userName: user.name,
       action: "UPDATE_SYSTEM_SETTINGS",
       entity: "SETTING",
-      newValue: JSON.stringify(body),
+      newValue: JSON.stringify(sanitizedBody),
     });
 
     return NextResponse.json({ success: true });

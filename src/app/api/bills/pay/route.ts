@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
@@ -75,6 +76,22 @@ export async function POST(req: Request) {
       where: { key: "notification_email" },
     });
     const adminEmail = notifSetting?.value || "admin@lunchcounter.com";
+
+    // Send real SMTP Email notification if configured
+    await sendEmail({
+      to: adminEmail,
+      subject: `[Lunch Counter] Payment Proof Submitted - ${user.name} (₹${bill.totalAmount})`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>New Payment Proof Submitted</h2>
+          <p><strong>Employee:</strong> ${user.name} (${user.employeeId})</p>
+          <p><strong>Bill Period:</strong> ${bill.weekStart} to ${bill.weekEnd}</p>
+          <p><strong>Total Amount:</strong> ₹${bill.totalAmount}</p>
+          <p><strong>Transaction UTR / Ref:</strong> ${txnReference || "N/A"}</p>
+          <p>Please log in to your Admin Dashboard to review and verify this payment proof.</p>
+        </div>
+      `,
+    });
 
     return NextResponse.json({
       success: true,

@@ -12,12 +12,17 @@ export default function AdminSettingsPage() {
   const [notificationEmail, setNotificationEmail] = useState("admin@lunchcounter.com");
   const [paymentUpiId, setPaymentUpiId] = useState("lunchcounter@upi");
   const [paymentQrCode, setPaymentQrCode] = useState("");
+  const [smtpHost, setSmtpHost] = useState("");
+  const [smtpPort, setSmtpPort] = useState("587");
+  const [smtpUser, setSmtpUser] = useState("");
+  const [smtpPass, setSmtpPass] = useState("");
   const [cloudinaryCloudName, setCloudinaryCloudName] = useState("");
   const [cloudinaryUploadPreset, setCloudinaryUploadPreset] = useState("");
   const [currency, setCurrency] = useState("₹");
   const [workingDays, setWorkingDays] = useState("Mon,Tue,Wed,Thu,Fri");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testingEmail, setTestingEmail] = useState(false);
   const [uploadingQr, setUploadingQr] = useState(false);
 
   useEffect(() => {
@@ -37,6 +42,10 @@ export default function AdminSettingsPage() {
         if (s.notification_email) setNotificationEmail(s.notification_email);
         if (s.payment_upi_id) setPaymentUpiId(s.payment_upi_id);
         if (s.payment_qr_code) setPaymentQrCode(s.payment_qr_code);
+        if (s.smtp_host) setSmtpHost(s.smtp_host);
+        if (s.smtp_port) setSmtpPort(s.smtp_port);
+        if (s.smtp_user) setSmtpUser(s.smtp_user);
+        if (s.smtp_pass) setSmtpPass(s.smtp_pass);
         if (s.cloudinary_cloud_name) setCloudinaryCloudName(s.cloudinary_cloud_name);
         if (s.cloudinary_upload_preset) setCloudinaryUploadPreset(s.cloudinary_upload_preset);
         if (s.currency) setCurrency(s.currency);
@@ -46,6 +55,28 @@ export default function AdminSettingsPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    setTestingEmail(true);
+    try {
+      const res = await fetch("/api/admin/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetEmail: notificationEmail }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(data.message || `Test email sent to ${notificationEmail}!`, "success");
+      } else {
+        showToast(data.error || "Failed to send test email.", "error");
+      }
+    } catch (e) {
+      showToast("Error triggering test email", "error");
+    } finally {
+      setTestingEmail(false);
     }
   };
 
@@ -97,6 +128,10 @@ export default function AdminSettingsPage() {
           notification_email: notificationEmail,
           payment_upi_id: paymentUpiId,
           payment_qr_code: paymentQrCode,
+          smtp_host: smtpHost,
+          smtp_port: smtpPort,
+          smtp_user: smtpUser,
+          smtp_pass: smtpPass,
           cloudinary_cloud_name: cloudinaryCloudName,
           cloudinary_upload_preset: cloudinaryUploadPreset,
           currency,
@@ -122,7 +157,7 @@ export default function AdminSettingsPage() {
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
           <SettingsIcon className="w-6 h-6 text-blue-600" /> System Settings
         </h1>
-        <p className="text-xs text-slate-500 mt-1">Configure global application parameters, payment UPI details, and business logic.</p>
+        <p className="text-xs text-slate-500 mt-1">Configure global application parameters, email notifications, payment UPI details, and business logic.</p>
       </div>
 
       <form onSubmit={handleSaveSettings} className="bg-white rounded-3xl p-5 sm:p-8 shadow-none sm:shadow-xl border border-slate-200 space-y-6">
@@ -139,9 +174,17 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-              Admin Notification Email
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">Admin Notification Email</label>
+              <button
+                type="button"
+                onClick={handleSendTestEmail}
+                disabled={testingEmail}
+                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                {testingEmail ? "Sending..." : "Send Test Email"}
+              </button>
+            </div>
             <input
               type="email"
               required
@@ -153,7 +196,71 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+        {/* SMTP Email Server Configuration Section */}
+        <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-bold uppercase tracking-wider text-amber-900">
+              SMTP Email Delivery Configuration (Gmail / SMTP / Resend)
+            </div>
+            <button
+              type="button"
+              onClick={handleSendTestEmail}
+              disabled={testingEmail}
+              className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition-colors"
+            >
+              {testingEmail ? "Testing..." : "Send Test Email"}
+            </button>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">SMTP Host</label>
+              <input
+                type="text"
+                value={smtpHost}
+                onChange={(e) => setSmtpHost(e.target.value)}
+                placeholder="e.g. smtp.gmail.com or smtp.resend.com"
+                className="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs focus:ring-2 focus:ring-amber-500 bg-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">SMTP Port</label>
+              <input
+                type="text"
+                value={smtpPort}
+                onChange={(e) => setSmtpPort(e.target.value)}
+                placeholder="587 or 465"
+                className="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs focus:ring-2 focus:ring-amber-500 bg-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">SMTP Username / Email</label>
+              <input
+                type="text"
+                value={smtpUser}
+                onChange={(e) => setSmtpUser(e.target.value)}
+                placeholder="e.g. admin@gmail.com"
+                className="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs focus:ring-2 focus:ring-amber-500 bg-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">SMTP Password / App Password</label>
+              <input
+                type="password"
+                value={smtpPass}
+                onChange={(e) => setSmtpPass(e.target.value)}
+                placeholder="Gmail App Password or API Key"
+                className="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs focus:ring-2 focus:ring-amber-500 bg-white"
+              />
+            </div>
+          </div>
+          <p className="text-[11px] text-amber-800">
+            For Gmail: Use <code>smtp.gmail.com</code>, Port <code>587</code>, and generate a 16-character <strong>App Password</strong> in Google Account security.
+          </p>
+        </div>
 
         {/* UPI Payment Configuration Section */}
         <div className="p-5 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-4">
